@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kenangan Kita</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@300;400;500;600&family=Caveat:wght@500;600;700&display=swap');
 
   :root{
     --bg: #FFFCFB;
@@ -207,6 +207,59 @@
     color:var(--ink-soft);
   }
 
+  /* ---------- SURAT (letter) ---------- */
+  .letter-section{
+    position:relative; z-index:1;
+    max-width:720px; margin:0 auto; padding:20px 24px 110px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .letter-section .gallery-head{ text-align:center; margin-bottom:44px; }
+  .letter-paper{
+    position:relative;
+    width:100%;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 39px, var(--pink-line) 39px 40px),
+      linear-gradient(180deg,#FFFDF9,#FFF8F1);
+    padding:58px 42px 54px 64px;
+    border-radius:3px;
+    box-shadow:0 24px 50px -22px rgba(61,44,51,0.38), 0 2px 12px rgba(61,44,51,0.08);
+    transform:rotate(-0.6deg);
+  }
+  .letter-paper::before{
+    content:'';
+    position:absolute; left:46px; top:0; bottom:0; width:1px;
+    background:rgba(197,116,142,0.28);
+  }
+  .letter-seal{
+    position:absolute; top:-20px; right:34px;
+    width:48px; height:48px; border-radius:50%;
+    background:var(--pink-deep); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; transform:rotate(10deg);
+    box-shadow:0 10px 18px -6px rgba(197,116,142,0.65);
+  }
+  .letter-to{
+    font-family:'Caveat',cursive; font-weight:600;
+    font-size:clamp(24px,4vw,32px); color:var(--ink);
+    margin-bottom:16px;
+  }
+  .letter-text{
+    font-family:'Caveat',cursive; font-weight:500;
+    font-size:clamp(19px,2.6vw,24px); line-height:1.75;
+    color:var(--ink); white-space:pre-wrap; min-height:140px;
+  }
+  .letter-caret{
+    display:inline-block; width:2px; height:1em; vertical-align:-0.15em;
+    background:var(--pink-deep); margin-left:2px;
+    animation:letterBlink 0.9s steps(1) infinite;
+  }
+  @keyframes letterBlink{ 50%{ opacity:0; } }
+  .letter-sign{
+    font-family:'Caveat',cursive; font-weight:700;
+    font-size:clamp(22px,3vw,28px); color:var(--pink-deep);
+    margin-top:24px; text-align:right;
+  }
+
   /* ---------- GALLERY ---------- */
   .gallery{
     position:relative; z-index:1;
@@ -294,10 +347,13 @@
   @media (prefers-reduced-motion: reduce){
     .petal, .scrolldown svg{ animation:none !important; }
     .card{ transition:none !important; }
+    .letter-caret{ animation:none !important; }
   }
   @media (max-width:520px){
     .counter{ gap:16px; padding:18px 20px; }
     .grid{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:26px 16px; }
+    .letter-paper{ padding:48px 24px 40px 42px; }
+    .letter-paper::before{ left:26px; }
   }
 </style>
 </head>
@@ -341,6 +397,20 @@
   <div class="grid" id="grid"></div>
 </div>
 
+<!-- Surat -->
+<div class="letter-section" id="letterSection">
+  <div class="gallery-head">
+    <div class="eyebrow">Sepucuk Surat</div>
+    <h2>Untuk Kamu</h2>
+    <p>Ditulis pelan-pelan, biar kebaca kayak beneran nulis tangan.</p>
+  </div>
+  <div class="letter-paper">
+    <div class="letter-seal">&#10084;</div>
+    <div class="letter-to" id="letterTo"></div>
+    <div class="letter-text" id="letterText"></div>
+    <div class="letter-sign" id="letterSign"></div>
+  </div>
+</div>
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
@@ -353,14 +423,17 @@
 <script>
 /* ============================================================
    ATUR SEMUANYA DI SINI
-   Ubah tanggal jadian dan daftar kenangan langsung lewat kode
-   di bawah ini. Judul "Selamanya" di atas diatur langsung di
-   HTML (bagian <h1>), bukan lewat CONFIG.
+   Ubah tanggal jadian, daftar kenangan, dan isi surat langsung
+   lewat kode di bawah ini. Judul "Selamanya" di atas diatur
+   langsung di HTML (bagian <h1>), bukan lewat CONFIG.
 
    Untuk "src" foto/video, kamu bisa isi dengan:
    - link gambar dari internet (https://...)
    - atau taruh file foto/video di folder yang sama dengan file
      HTML ini, lalu tulis nama filenya saja, misal "foto1.jpg"
+
+   Untuk surat, isi CONFIG.letter di bawah. Pakai "\n" untuk
+   ganti baris / paragraf baru.
    ============================================================ */
 const CONFIG = {
 
@@ -417,7 +490,13 @@ const CONFIG = {
     //   caption: "Momen liburan kita",
     //   date: "2024-01-20"
     // },
-  ]
+  ],
+
+  letter: {
+    to: "This for u sayangkuuuuuu",
+    body: "Aku nggak pandai merangkai kata kata, butt aku ingin kamu tahu suatu hal: semua hal yang aku pernah lakuin bareng kamu itu first experience buat aku. dan menurutku semua momen itu perlu diabadikan.\n\nDari hal-hal kecil yang bikin ketawa sampai momen-momen diam yang cuma kita berdua yang ngerti, makasiiii udah nemenin akuu.\n\nMakasiii udah bertahan dari semua hal yg pernah kita hadapi, maaf kadang ada hal dari aku yg buat kamu marah, ini ga ada apa-apnya di banding semua hal yg pernah kamu kasih di hidupkuu. \n\n thanks for all sayangkuuuuu, lovee uuuu",
+    signature: "— Danuyyy"
+  }
 };
 
 (function(){
@@ -523,6 +602,69 @@ const CONFIG = {
   lightbox.addEventListener('click', function(e){ if(e.target === lightbox) closeLightbox(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLightbox(); });
 
+  /* ---------- Surat: efek nulis tangan ---------- */
+  function initLetter(){
+    const section = document.getElementById('letterSection');
+    const toEl = document.getElementById('letterTo');
+    const textEl = document.getElementById('letterText');
+    const signEl = document.getElementById('letterSign');
+    if(!section || !CONFIG.letter) return;
+
+    toEl.textContent = CONFIG.letter.to || '';
+
+    const fullText = CONFIG.letter.body || '';
+    const signature = CONFIG.letter.signature || '';
+    let started = false;
+
+    function typeInto(el, text, onDone){
+      const caret = document.createElement('span');
+      caret.className = 'letter-caret';
+      el.textContent = '';
+      el.appendChild(caret);
+      let i = 0;
+      function step(){
+        if(i < text.length){
+          const ch = text[i];
+          caret.insertAdjacentText('beforebegin', ch);
+          i++;
+          const delay = ch === '\n' ? 300 : (26 + Math.random()*40);
+          setTimeout(step, delay);
+        } else {
+          caret.remove();
+          if(onDone) onDone();
+        }
+      }
+      step();
+    }
+
+    function startWriting(){
+      if(started) return;
+      started = true;
+      typeInto(textEl, fullText, function(){
+        setTimeout(function(){
+          signEl.style.opacity = 0;
+          signEl.textContent = signature;
+          signEl.style.transition = 'opacity .8s ease';
+          requestAnimationFrame(function(){ signEl.style.opacity = 1; });
+        }, 250);
+      });
+    }
+
+    if('IntersectionObserver' in window){
+      const obs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            startWriting();
+            obs.disconnect();
+          }
+        });
+      }, { threshold: 0.35 });
+      obs.observe(section);
+    } else {
+      startWriting();
+    }
+  }
+
   const bgMusic = document.getElementById('bgMusic');
   const audioToggle = document.getElementById('audioToggle');
   const audioStatus = document.getElementById('audioStatus');
@@ -535,7 +677,8 @@ const CONFIG = {
   const MUSIC_LIST = [
     { src: 'lagu1.mp3', title: 'Shape of My Heart', artist: 'Backstreet Boy' },
     { src: 'jatuhsuka.mp3', title: 'Jatuh Suka', artist: 'Tulus' },
-    { src: 'indo.mp3', title: 'Jangan Pencet', artist: 'Jangannnnnnnnnnnnnn' }
+    { src: 'indo.mp3', title: 'Jangan Pencet', artist: 'Jangannnnnnnnnnnnnn' },
+    { src: 'callaway.mp3', title: 'One Call Away', artist: 'Charlie Puth' }
   ];
   let currentTrackIndex = 0;
 
@@ -611,6 +754,7 @@ const CONFIG = {
 
   initHero();
   renderGallery();
+  initLetter();
 })();
 </script>
 </body>
