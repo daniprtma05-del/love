@@ -344,6 +344,102 @@
     position:absolute; top:22px; right:26px; background:none; border:none; color:#fff; font-size:28px; cursor:pointer; opacity:0.85;
   }
 
+  /* ---------- PUZZLE GAME ---------- */
+  .puzzle-section{
+    position:relative; z-index:1;
+    max-width:640px; margin:0 auto; padding:20px 24px 120px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .puzzle-section .gallery-head{ text-align:center; margin-bottom:36px; }
+  .puzzle-wrap{
+    background:var(--panel);
+    border:1px solid var(--pink-line);
+    border-radius:22px;
+    padding:26px;
+    box-shadow:var(--shadow);
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+  .puzzle-stats{
+    display:flex; gap:30px; align-items:center; justify-content:center;
+  }
+  .puzzle-stats .stat{ display:flex; flex-direction:column; align-items:center; }
+  .puzzle-stats .stat .val{ font-family:'Fraunces',serif; font-size:22px; color:var(--pink-deep); font-weight:600; }
+  .puzzle-stats .stat .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink-soft); margin-top:2px; }
+
+  .puzzle-board{
+    position:relative;
+    width:min(88vw,340px);
+    height:min(88vw,340px);
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:repeat(3,1fr);
+    gap:4px;
+    background:var(--pink-line);
+    border-radius:12px;
+    padding:4px;
+    box-shadow:0 12px 26px -14px rgba(61,44,51,0.4);
+  }
+  .puzzle-tile{
+    background-color:#fff;
+    background-repeat:no-repeat;
+    border-radius:6px;
+    cursor:pointer;
+    transition:transform .15s ease, filter .2s ease;
+    box-shadow:0 2px 4px rgba(61,44,51,0.15);
+  }
+  .puzzle-tile:hover{ filter:brightness(1.04); }
+  .puzzle-tile.blank{
+    background:var(--bg-soft);
+    cursor:default;
+    box-shadow:none;
+  }
+  .puzzle-board.solved .puzzle-tile{
+    cursor:default;
+  }
+
+  .puzzle-controls{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  }
+  .puzzle-controls button{
+    border:none;
+    border-radius:999px;
+    background:var(--pink-deep);
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    padding:10px 20px;
+    cursor:pointer;
+    transition:transform .25s ease, background .25s ease;
+  }
+  .puzzle-controls button:hover{ transform:scale(1.03); background:#b45f7b; }
+  .puzzle-controls button.secondary{
+    background:transparent;
+    color:var(--pink-deep);
+    border:1px solid var(--pink-deep);
+  }
+  .puzzle-controls button.secondary:hover{ background:rgba(197,116,142,0.08); }
+
+  .puzzle-caption{
+    font-family:'Fraunces',serif; font-style:italic; font-size:14px;
+    color:var(--ink-soft); text-align:center;
+  }
+
+  .puzzle-win{
+    display:none;
+    text-align:center;
+    animation:winFade .6s ease;
+  }
+  .puzzle-win.show{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .puzzle-win .heart-burst{ font-size:30px; }
+  .puzzle-win .msg{
+    font-family:'Fraunces',serif; font-style:italic; font-size:17px; color:var(--pink-deep);
+  }
+  @keyframes winFade{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+
   @media (prefers-reduced-motion: reduce){
     .petal, .scrolldown svg{ animation:none !important; }
     .card{ transition:none !important; }
@@ -397,6 +493,31 @@
   <div class="grid" id="grid"></div>
 </div>
 
+<!-- Puzzle Foto -->
+<div class="puzzle-section" id="puzzleSection">
+  <div class="gallery-head">
+    <div class="eyebrow">Mini Game</div>
+    <h2>Susun Kenangan</h2>
+    <p>Geser kepingan foto sampai gambarnya utuh lagi.</p>
+  </div>
+  <div class="puzzle-wrap">
+    <div class="puzzle-stats">
+      <div class="stat"><div class="val" id="puzzleMoves">0</div><div class="lbl">Langkah</div></div>
+      <div class="stat"><div class="val" id="puzzleTime">00:00</div><div class="lbl">Waktu</div></div>
+    </div>
+    <div class="puzzle-board" id="puzzleBoard"></div>
+    <div class="puzzle-caption" id="puzzleCaption"></div>
+    <div class="puzzle-controls">
+      <button id="puzzleNextPhoto" type="button">Ganti Foto</button>
+      <button id="puzzleReveal" type="button" class="secondary">Lihat Gambar Asli</button>
+    </div>
+    <div class="puzzle-win" id="puzzleWin">
+      <div class="heart-burst">&#10084;&#10084;&#10084;</div>
+      <div class="msg" id="puzzleWinMsg">Selesai! Kamu berhasil menyusunnya kembali.</div>
+    </div>
+  </div>
+</div>
+
 <!-- Surat -->
 <div class="letter-section" id="letterSection">
   <div class="gallery-head">
@@ -433,6 +554,10 @@
 
    Untuk surat, isi CONFIG.letter di bawah. Pakai "\n" untuk
    ganti baris / paragraf baru.
+
+   Untuk game puzzle foto, atur CONFIG.puzzle di bawah:
+   - image: nama file foto (taruh di folder yang sama)
+   - caption: judul kecil yang muncul di bawah puzzle
    ============================================================ */
 const CONFIG = {
 
@@ -490,6 +615,18 @@ const CONFIG = {
     //   date: "2024-01-20"
     // },
   ],
+
+  puzzle: {
+    // daftar foto yang bisa muncul di puzzle — tiap "Acak Ulang" / "Foto Lain"
+    // akan pilih salah satu secara acak dari daftar ini
+    images: [
+      { src: "ft1.jpeg", caption: "The beginning of everything" },
+      { src: "ft2.jpg",  caption: "Kita?????" },
+      { src: "ft3.jpg",  caption: "that flower............" },
+      { src: "ft4.jpg",  caption: "First of Frist" },
+      { src: "ft5.jpeg", caption: "Thanks for all" }
+    ]
+  },
 
   letter: {
     to: "This for u sayangkuuuuuu",
@@ -664,6 +801,179 @@ const CONFIG = {
     }
   }
 
+  /* ---------- Game Puzzle Foto (sliding puzzle 3x3) ---------- */
+  function initPuzzle(){
+    const boardEl = document.getElementById('puzzleBoard');
+    const movesEl = document.getElementById('puzzleMoves');
+    const timeEl = document.getElementById('puzzleTime');
+    const captionEl = document.getElementById('puzzleCaption');
+    const nextPhotoBtn = document.getElementById('puzzleNextPhoto');
+    const revealBtn = document.getElementById('puzzleReveal');
+    const winEl = document.getElementById('puzzleWin');
+    const photoList = (CONFIG.puzzle && CONFIG.puzzle.images) || [];
+    if(!boardEl || photoList.length === 0) return;
+
+    const SIZE = 3; // grid 3x3
+    const BLANK = SIZE*SIZE - 1; // 8
+    let currentPhotoIndex = -1;
+    let imageSrc = '';
+
+    function pickNextPhoto(random){
+      if(photoList.length === 1){
+        currentPhotoIndex = 0;
+      } else if(random){
+        let next;
+        do{ next = Math.floor(Math.random()*photoList.length); } while(next === currentPhotoIndex);
+        currentPhotoIndex = next;
+      } else {
+        currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
+      }
+      const photo = photoList[currentPhotoIndex];
+      imageSrc = photo.src;
+      captionEl.textContent = photo.caption || '';
+    }
+
+    let board = [];       // array posisi -> id keping (0..7 = gambar, 8 = kosong)
+    let moves = 0;
+    let seconds = 0;
+    let timerId = null;
+    let solved = false;
+    let revealing = false;
+
+    function solvedBoard(){
+      const arr = [];
+      for(let i=0;i<SIZE*SIZE;i++) arr.push(i);
+      return arr;
+    }
+
+    function isSolved(arr){
+      for(let i=0;i<arr.length;i++){ if(arr[i] !== i) return false; }
+      return true;
+    }
+
+    function shuffleBoard(){
+      board = solvedBoard();
+      let blank = BLANK;
+      let lastBlank = -1;
+      const shuffleSteps = 120;
+      for(let s=0;s<shuffleSteps;s++){
+        const neighbors = getNeighbors(blank).filter(function(n){ return n !== lastBlank; });
+        const next = neighbors[Math.floor(Math.random()*neighbors.length)];
+        board[blank] = board[next];
+        board[next] = BLANK;
+        lastBlank = blank;
+        blank = next;
+      }
+      if(isSolved(board)){
+        // pastikan tidak langsung solved
+        const n = getNeighbors(BLANK)[0];
+        const b = board.indexOf(BLANK);
+        board[b] = board[n];
+        board[n] = BLANK;
+      }
+    }
+
+    function getNeighbors(pos){
+      const row = Math.floor(pos/SIZE), col = pos%SIZE;
+      const result = [];
+      if(row > 0) result.push(pos-SIZE);
+      if(row < SIZE-1) result.push(pos+SIZE);
+      if(col > 0) result.push(pos-1);
+      if(col < SIZE-1) result.push(pos+1);
+      return result;
+    }
+
+    function startTimer(){
+      stopTimer();
+      seconds = 0;
+      timeEl.textContent = '00:00';
+      timerId = setInterval(function(){
+        seconds++;
+        const m = String(Math.floor(seconds/60)).padStart(2,'0');
+        const s = String(seconds%60).padStart(2,'0');
+        timeEl.textContent = m + ':' + s;
+      }, 1000);
+    }
+    function stopTimer(){
+      if(timerId){ clearInterval(timerId); timerId = null; }
+    }
+
+    function render(){
+      boardEl.innerHTML = '';
+      boardEl.classList.toggle('solved', solved);
+      board.forEach(function(tileId, pos){
+        const tile = document.createElement('div');
+        tile.className = 'puzzle-tile' + (tileId === BLANK ? ' blank' : '');
+        if(tileId !== BLANK){
+          const row = Math.floor(tileId/SIZE), col = tileId%SIZE;
+          const pct = 100/(SIZE-1);
+          tile.style.backgroundImage = "url('"+imageSrc+"')";
+          tile.style.backgroundSize = (SIZE*100)+'% '+(SIZE*100)+'%';
+          tile.style.backgroundPosition = (col*pct)+'% '+(row*pct)+'%';
+        }
+        tile.addEventListener('click', function(){ handleTileClick(pos); });
+        boardEl.appendChild(tile);
+      });
+    }
+
+    function handleTileClick(pos){
+      if(solved || revealing) return;
+      const blankPos = board.indexOf(BLANK);
+      const neighbors = getNeighbors(blankPos);
+      if(neighbors.indexOf(pos) === -1) return;
+      board[blankPos] = board[pos];
+      board[pos] = BLANK;
+      moves++;
+      movesEl.textContent = moves;
+      render();
+      if(isSolved(board)){
+        solved = true;
+        stopTimer();
+        winEl.classList.add('show');
+      }
+    }
+
+    function newGame(chooseRandomPhoto){
+      winEl.classList.remove('show');
+      solved = false;
+      revealing = false;
+      moves = 0;
+      movesEl.textContent = '0';
+      revealBtn.textContent = 'Lihat Gambar Asli';
+      if(chooseRandomPhoto || currentPhotoIndex === -1){
+        pickNextPhoto(true);
+      }
+      shuffleBoard();
+      render();
+      startTimer();
+    }
+
+    nextPhotoBtn.addEventListener('click', function(){
+      pickNextPhoto(false);
+      newGame(false);
+    });
+    revealBtn.addEventListener('click', function(){
+      revealing = !revealing;
+      if(revealing){
+        boardEl.innerHTML = '';
+        const full = document.createElement('div');
+        full.style.gridColumn = '1 / -1';
+        full.style.gridRow = '1 / -1';
+        full.style.backgroundImage = "url('"+imageSrc+"')";
+        full.style.backgroundSize = 'cover';
+        full.style.backgroundPosition = 'center';
+        full.style.borderRadius = '8px';
+        boardEl.appendChild(full);
+        revealBtn.textContent = 'Kembali ke Puzzle';
+      } else {
+        render();
+        revealBtn.textContent = 'Lihat Gambar Asli';
+      }
+    });
+
+    newGame(true);
+  }
+
   const bgMusic = document.getElementById('bgMusic');
   const audioToggle = document.getElementById('audioToggle');
   const audioStatus = document.getElementById('audioStatus');
@@ -752,6 +1062,7 @@ const CONFIG = {
 
   initHero();
   renderGallery();
+  initPuzzle();
   initLetter();
 })();
 </script>
