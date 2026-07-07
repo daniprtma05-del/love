@@ -17,6 +17,8 @@
     --ink: #3D2C33;
     --ink-soft: #8A6E77;
     --gold: #CBA06E;
+    --good: #7AA57A;
+    --bad: #C9756F;
     --shadow: 0 10px 30px -12px rgba(197,116,142,0.25);
   }
 
@@ -344,14 +346,14 @@
     position:absolute; top:22px; right:26px; background:none; border:none; color:#fff; font-size:28px; cursor:pointer; opacity:0.85;
   }
 
-  /* ---------- PUZZLE GAME ---------- */
-  .puzzle-section{
+  /* ---------- MEMORY MATCH GAME ---------- */
+  .match-section{
     position:relative; z-index:1;
-    max-width:640px; margin:0 auto; padding:20px 24px 120px;
+    max-width:640px; margin:0 auto; padding:20px 24px 100px;
     display:flex; flex-direction:column; align-items:center;
   }
-  .puzzle-section .gallery-head{ text-align:center; margin-bottom:36px; }
-  .puzzle-wrap{
+  .match-section .gallery-head{ text-align:center; margin-bottom:36px; }
+  .match-wrap{
     background:var(--panel);
     border:1px solid var(--pink-line);
     border-radius:22px;
@@ -363,87 +365,155 @@
     align-items:center;
     gap:18px;
   }
-  .puzzle-stats{
-    display:flex; gap:30px; align-items:center; justify-content:center;
-  }
-  .puzzle-stats .stat{ display:flex; flex-direction:column; align-items:center; }
-  .puzzle-stats .stat .val{ font-family:'Fraunces',serif; font-size:22px; color:var(--pink-deep); font-weight:600; }
-  .puzzle-stats .stat .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink-soft); margin-top:2px; }
+  .match-stats{ display:flex; gap:30px; align-items:center; justify-content:center; }
+  .match-stats .stat{ display:flex; flex-direction:column; align-items:center; }
+  .match-stats .stat .val{ font-family:'Fraunces',serif; font-size:22px; color:var(--pink-deep); font-weight:600; }
+  .match-stats .stat .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink-soft); margin-top:2px; }
 
-  .puzzle-board{
-    position:relative;
-    width:min(88vw,340px);
-    height:min(88vw,340px);
+  .match-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    grid-template-rows:repeat(3,1fr);
-    gap:4px;
-    background:var(--pink-line);
-    border-radius:12px;
-    padding:4px;
-    box-shadow:0 12px 26px -14px rgba(61,44,51,0.4);
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    width:100%;
+    max-width:360px;
+    perspective:800px;
   }
-  .puzzle-tile{
-    background-color:#fff;
-    background-repeat:no-repeat;
-    border-radius:6px;
+  .match-card{
+    position:relative;
+    aspect-ratio:1/1;
     cursor:pointer;
-    transition:transform .15s ease, filter .2s ease;
-    box-shadow:0 2px 4px rgba(61,44,51,0.15);
   }
-  .puzzle-tile:hover{ filter:brightness(1.04); }
-  .puzzle-tile.blank{
-    background:var(--bg-soft);
-    cursor:default;
-    box-shadow:none;
+  .match-card-inner{
+    position:relative;
+    width:100%; height:100%;
+    border-radius:10px;
+    transition:transform .5s cubic-bezier(.2,.8,.2,1);
+    transform-style:preserve-3d;
+    box-shadow:0 4px 10px rgba(61,44,51,0.18);
   }
-  .puzzle-board.solved .puzzle-tile{
-    cursor:default;
+  .match-card.flipped .match-card-inner,
+  .match-card.matched .match-card-inner{
+    transform:rotateY(180deg);
   }
+  .match-face{
+    position:absolute; inset:0;
+    border-radius:10px;
+    backface-visibility:hidden;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .match-face-back{
+    background:linear-gradient(135deg,var(--pink),var(--pink-deep));
+    color:#fff; font-size:20px;
+  }
+  .match-face-front{
+    transform:rotateY(180deg);
+    background:#fff;
+  }
+  .match-face-front img{ width:100%; height:100%; object-fit:cover; }
+  .match-card.matched .match-card-inner{ opacity:0.55; }
 
-  .puzzle-controls{
-    display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-  }
-  .puzzle-controls button{
-    border:none;
-    border-radius:999px;
-    background:var(--pink-deep);
-    color:#fff;
-    font-size:13px;
-    font-weight:600;
-    padding:10px 20px;
-    cursor:pointer;
+  .match-controls{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .match-controls button{
+    border:none; border-radius:999px;
+    background:var(--pink-deep); color:#fff;
+    font-size:13px; font-weight:600;
+    padding:10px 20px; cursor:pointer;
     transition:transform .25s ease, background .25s ease;
   }
-  .puzzle-controls button:hover{ transform:scale(1.03); background:#b45f7b; }
-  .puzzle-controls button.secondary{
-    background:transparent;
-    color:var(--pink-deep);
-    border:1px solid var(--pink-deep);
-  }
-  .puzzle-controls button.secondary:hover{ background:rgba(197,116,142,0.08); }
+  .match-controls button:hover{ transform:scale(1.03); background:#b45f7b; }
 
-  .puzzle-caption{
-    font-family:'Fraunces',serif; font-style:italic; font-size:14px;
-    color:var(--ink-soft); text-align:center;
+  .match-win{
+    display:none; text-align:center; animation:winFade .6s ease;
   }
-
-  .puzzle-win{
-    display:none;
-    text-align:center;
-    animation:winFade .6s ease;
-  }
-  .puzzle-win.show{ display:flex; flex-direction:column; align-items:center; gap:10px; }
-  .puzzle-win .heart-burst{ font-size:30px; }
-  .puzzle-win .msg{
-    font-family:'Fraunces',serif; font-style:italic; font-size:17px; color:var(--pink-deep);
-  }
+  .match-win.show{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .match-win .heart-burst{ font-size:30px; }
+  .match-win .msg{ font-family:'Fraunces',serif; font-style:italic; font-size:17px; color:var(--pink-deep); }
   @keyframes winFade{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+
+  /* ---------- TRUTH OR DARE ---------- */
+  .tod-section{
+    position:relative; z-index:1;
+    max-width:600px; margin:0 auto; padding:20px 24px 110px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .tod-section .gallery-head{ text-align:center; margin-bottom:36px; }
+  .tod-wrap{
+    background:var(--panel);
+    border:1px solid var(--pink-line);
+    border-radius:22px;
+    padding:30px 26px;
+    box-shadow:var(--shadow);
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+  }
+  .tod-stats{ display:flex; gap:34px; align-items:center; justify-content:center; }
+  .tod-stats .stat{ display:flex; flex-direction:column; align-items:center; }
+  .tod-stats .stat .val{ font-family:'Fraunces',serif; font-size:22px; color:var(--pink-deep); font-weight:600; }
+  .tod-stats .stat .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink-soft); margin-top:2px; }
+
+  .tod-choice{
+    display:flex; gap:14px; width:100%; justify-content:center; flex-wrap:wrap;
+  }
+  .tod-btn{
+    flex:1 1 160px; max-width:220px;
+    border:none; border-radius:16px;
+    font-family:'Fraunces',serif; font-size:16px; font-weight:600;
+    padding:18px 20px; cursor:pointer; color:#fff;
+    transition:transform .25s ease, box-shadow .25s ease;
+    box-shadow:0 10px 20px -10px rgba(61,44,51,0.35);
+  }
+  .tod-btn:hover{ transform:translateY(-3px) scale(1.02); }
+  .tod-btn-truth{ background:linear-gradient(135deg,#C5748E,#A85C76); }
+  .tod-btn-dare{ background:linear-gradient(135deg,#CBA06E,#B5824E); }
+
+  .tod-card{
+    width:100%;
+    background:#fff;
+    border:1px solid var(--pink-line);
+    border-radius:18px;
+    padding:32px 26px;
+    text-align:center;
+    box-shadow:0 14px 30px -16px rgba(61,44,51,0.3);
+  }
+  .tod-card[hidden]{ display:none; }
+  .tod-badge{
+    display:inline-block;
+    font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
+    font-weight:700; padding:6px 16px; border-radius:999px;
+    margin-bottom:16px;
+  }
+  .tod-badge.truth{ background:rgba(197,116,142,0.16); color:var(--pink-deep); }
+  .tod-badge.dare{ background:rgba(203,160,110,0.2); color:#96703f; }
+  .tod-text{
+    font-family:'Fraunces',serif; font-size:clamp(18px,3vw,21px);
+    color:var(--ink); line-height:1.55;
+  }
+
+  .tod-controls{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .tod-controls[hidden]{ display:none; }
+  .tod-controls button{
+    border:none; border-radius:999px;
+    background:var(--pink-deep); color:#fff;
+    font-size:13px; font-weight:600;
+    padding:10px 22px; cursor:pointer;
+    transition:transform .25s ease, background .25s ease;
+  }
+  .tod-controls button:hover{ transform:scale(1.03); background:#b45f7b; }
+
+  .tod-empty{
+    font-size:13.5px; color:var(--ink-soft); text-align:center;
+  }
+  .tod-empty[hidden]{ display:none; }
 
   @media (prefers-reduced-motion: reduce){
     .petal, .scrolldown svg{ animation:none !important; }
     .card{ transition:none !important; }
     .letter-caret{ animation:none !important; }
+    .match-card-inner{ transition:none !important; }
   }
   @media (max-width:520px){
     .counter{ gap:16px; padding:18px 20px; }
@@ -493,28 +563,55 @@
   <div class="grid" id="grid"></div>
 </div>
 
-<!-- Puzzle Foto -->
-<div class="puzzle-section" id="puzzleSection">
+<!-- Memory Match Game -->
+<div class="match-section" id="matchSection">
   <div class="gallery-head">
-    <div class="eyebrow">Mini Game</div>
-    <h2>Susun Kenangan</h2>
-    <p>Geser kepingan foto sampai gambarnya utuh lagi.</p>
+    <div class="eyebrow">Khan Game</div>
+    <h2>Cocokkan Kenangan</h2>
+    <p>Balik kartu dan temukan pasangan foto yang sama.</p>
+    <p>Maaf yaaaa game sebelumnya kesusahan jadi ini ajaaa wkwkw</p>
   </div>
-  <div class="puzzle-wrap">
-    <div class="puzzle-stats">
-      <div class="stat"><div class="val" id="puzzleMoves">0</div><div class="lbl">Langkah</div></div>
-      <div class="stat"><div class="val" id="puzzleTime">00:00</div><div class="lbl">Waktu</div></div>
+  <div class="match-wrap">
+    <div class="match-stats">
+      <div class="stat"><div class="val" id="matchMoves">0</div><div class="lbl">Langkah</div></div>
+      <div class="stat"><div class="val" id="matchTime">00:00</div><div class="lbl">Waktu</div></div>
+      <div class="stat"><div class="val" id="matchPairs">0/0</div><div class="lbl">Pasangan</div></div>
     </div>
-    <div class="puzzle-board" id="puzzleBoard"></div>
-    <div class="puzzle-caption" id="puzzleCaption"></div>
-    <div class="puzzle-controls">
-      <button id="puzzleNextPhoto" type="button">Ganti Foto</button>
-      <button id="puzzleReveal" type="button" class="secondary">Lihat Gambar Asli</button>
+    <div class="match-grid" id="matchGrid"></div>
+    <div class="match-controls">
+      <button id="matchRestart" type="button">Main Lagi</button>
     </div>
-    <div class="puzzle-win" id="puzzleWin">
+    <div class="match-win" id="matchWin">
       <div class="heart-burst">&#10084;&#10084;&#10084;</div>
-      <div class="msg" id="puzzleWinMsg">Selesai! Kamu berhasil menyusunnya kembali.</div>
+      <div class="msg" id="matchWinMsg">Semua kartu berhasil dicocokkan!, Congratsssss yaaa sayangggggg</div>
     </div>
+  </div>
+</div>
+
+<!-- Truth or Dare -->
+<div class="tod-section" id="todSection">
+  <div class="gallery-head">
+    <div class="eyebrow">Khan Game</div>
+    <h2>Truth or Dare</h2>
+  </div>
+  <div class="tod-wrap">
+    <div class="tod-stats">
+      <div class="stat"><div class="val" id="todTruthCount">0/50</div><div class="lbl">Jujur Diambil</div></div>
+      <div class="stat"><div class="val" id="todDareCount">0/50</div><div class="lbl">Tantangan Diambil</div></div>
+    </div>
+    <div class="tod-choice" id="todChoice">
+      <button class="tod-btn tod-btn-truth" id="todTruthBtn" type="button">Jujur (Truth)</button>
+      <button class="tod-btn tod-btn-dare" id="todDareBtn" type="button">Tantangan (Dare)</button>
+    </div>
+    <div class="tod-card" id="todCard" hidden>
+      <div class="tod-badge" id="todBadge"></div>
+      <div class="tod-text" id="todText"></div>
+    </div>
+    <div class="tod-controls" id="todControls" hidden>
+      <button id="todAgain" type="button">Pilih Lagi</button>
+      <button id="todReset" type="button">Reset Semua</button>
+    </div>
+    <div class="tod-empty" id="todEmpty" hidden></div>
   </div>
 </div>
 
@@ -555,9 +652,13 @@
    Untuk surat, isi CONFIG.letter di bawah. Pakai "\n" untuk
    ganti baris / paragraf baru.
 
-   Untuk game puzzle foto, atur CONFIG.puzzle di bawah:
-   - image: nama file foto (taruh di folder yang sama)
-   - caption: judul kecil yang muncul di bawah puzzle
+   Untuk Memory Match Game, atur CONFIG.memoryMatch.images:
+   isi 4-8 nama file foto (taruh di folder yang sama). Tiap foto
+   otomatis dibuatkan pasangannya lalu diacak.
+
+   Untuk Truth or Dare, atur CONFIG.truthOrDare.truths dan
+   CONFIG.truthOrDare.dares (masing-masing 50 item). Silakan
+   ganti/tambah/kurangi sesuai selera kalian berdua.
    ============================================================ */
 const CONFIG = {
 
@@ -607,6 +708,36 @@ const CONFIG = {
     caption: "Thanks for all",
     date: "06-28-2026"
   },
+      {
+    type: "image",
+    src: "ft6.jpeg",
+    caption: "Orang depan kita ngajak foto",
+    date: "07-06-2026"
+  },
+      {
+    type: "image",
+    src: "ft7.png",
+    caption: "Salah nama accaa dikit ga ngaruh",
+    date: "07-06-2026"
+  },
+      {
+    type: "image",
+    src: "ft8.jpeg",
+    caption: "Buru-buru guysssss",
+    date: "06-28-2026"
+  },
+      {
+    type: "image",
+    src: "ft9.png",
+    caption: "Cweekkkk gua cantuk bgt gilaaaaaa",
+    date: "07-05-2026"
+  },
+      {
+    type: "image",
+    src: "ft10.jpg",
+    caption: "Anu ini, hehehe",
+    date: "05-11-2026"
+  },
     // Tambah kenangan baru dengan menyalin format di atas, contoh:
     // {
     //   type: "video",
@@ -616,15 +747,118 @@ const CONFIG = {
     // },
   ],
 
-  puzzle: {
-    // daftar foto yang bisa muncul di puzzle — tiap "Acak Ulang" / "Foto Lain"
-    // akan pilih salah satu secara acak dari daftar ini
-    images: [
-      { src: "ft1.jpeg", caption: "The beginning of everything" },
-      { src: "ft2.jpg",  caption: "Kita?????" },
-      { src: "ft3.jpg",  caption: "that flower............" },
-      { src: "ft4.jpg",  caption: "First of Frist" },
-      { src: "ft5.jpeg", caption: "Thanks for all" }
+  memoryMatch: {
+    // foto yang dipakai untuk game cocokkan kartu, tiap foto akan
+    // otomatis punya pasangan.
+    // Jika daftar kosong, game akan menggunakan semua foto dari
+    // CONFIG.memories secara otomatis.
+    images: []
+  },
+
+  truthOrDare: {
+    truths: [
+      "Kapan pertama kali kamu sadar suka sama aku?",
+      "Momen apa yang bikin kamu yakin aku 'the one'?",
+      "Apa hal pertama yang kamu perhatiin dari aku?",
+      "Julukan apa yang paling pengen kamu kasih ke aku?",
+      "Kalau harus gambarin hubungan kita pakai satu kata, apa?",
+      "Momen paling lucu yang pernah kita alami bareng?",
+      "Apa hal kecil dari aku yang bikin kamu senyum sendiri?",
+      "Kapan kamu ngerasa paling sayang sama aku?",
+      "Kalau bisa relive satu momen kita, momen apa itu?",
+      "Apa hal yang pengen kamu perbaiki dari cara kita komunikasi?",
+      "Momen paling deg-degan pas awal deket sama aku?",
+      "Apa yang bikin kamu yakin buat lanjut serius sama aku?",
+      "Kalau harus kasih rating hubungan kita 1-10, berapa dan kenapa?",
+      "Apa satu kebiasaan aku yang paling kamu suka?",
+      "Apa satu kebiasaan aku yang bikin kamu gemes atau kesel?",
+      "Kapan terakhir kali kamu kangen banget sama aku?",
+      "Apa mimpi atau rencana masa depan yang pengen kamu wujudin bareng aku?",
+      "Kalau kita ketemu di kehidupan lain, menurut kamu kita bakal ketemu lagi?",
+      "Apa hal yang belum pernah kamu ceritain ke aku?",
+      "Momen paling romantis versi kamu yang pernah kita lalui?",
+      "Apa yang bikin kamu percaya sama aku?",
+      "Kalau harus milih satu lagu buat gambarin kita, lagu apa?",
+      "Apa ketakutan terbesar kamu soal hubungan ini?",
+      "Apa hal yang pengen kamu lakuin bareng aku tapi belum kesampaian?",
+      "Siapa yang lebih dulu naksir, kamu atau aku?",
+      "Apa first impression kamu ke aku waktu pertama ketemu?",
+      "Kalau kita berantem, apa yang biasanya bikin kamu luluh duluan?",
+      "Apa panggilan sayang favorit kamu buat aku?",
+      "Momen apa yang bikin kamu mikir 'gila, aku beruntung banget'?",
+      "Kalau harus jujur, siapa yang lebih posesif, kamu atau aku?",
+      "Apa hal romantis yang pengen kamu lakuin tapi malu?",
+      "Kapan kamu ngerasa paling nyaman cerita ke aku?",
+      "Apa satu rahasia kecil yang belum pernah kamu bilang?",
+      "Kalau kita LDR, gimana cara kamu tetep percaya?",
+      "Apa yang paling kamu takutin bisa bikin kita pisah?",
+      "Menurut kamu siapa yang lebih sayang duluan?",
+      "Apa hal yang pengen kamu ubah dari diri kamu demi hubungan kita?",
+      "Apa satu momen yang bikin kamu nangis, senang atau sedih, gara-gara aku?",
+      "Kalau harus kasih satu nasihat buat pasangan lain, apa?",
+      "Apa hal yang bikin kamu yakin ini cinta, bukan cuma suka?",
+      "Momen paling awkward pas kita masih PDKT?",
+      "Apa kado paling berkesan yang pernah kamu kasih atau terima dari aku?",
+      "Kalau kita nikah nanti, konsep pernikahan impian kamu gimana?",
+      "Apa hal receh yang bikin kamu ketawa tiap inget?",
+      "Apa satu hal yang pengen kamu denger dari aku tapi belum pernah?",
+      "Kapan kamu ngerasa paling posesif sama aku?",
+      "Apa hal yang bikin kamu makin sayang meski udah lama bareng?",
+      "Kalau aku ilang sehari tanpa kabar, apa yang bakal kamu lakuin?",
+      "Apa satu kelemahan aku yang kamu terima apa adanya?",
+      "Kalau harus jujur, siapa yang lebih sering kangen duluan?"
+    ],
+    dares: [
+      "Peluk pasangan kamu selama 30 detik tanpa ngomong apa-apa.",
+      "Kirim voice note bilang 'aku sayang kamu' pakai suara paling lucu.",
+      "Foto selfie bareng dengan ekspresi paling konyol.",
+      "Nyanyiin potongan lagu favorit kalian berdua.",
+      "Kasih pijat tangan atau bahu ke pasangan selama 1 menit.",
+      "Tulis satu pesan manis di kertas dan kasih ke pasangan.",
+      "Ceritain kenangan favorit kalian sambil megang tangan pasangan.",
+      "Coba tiru gaya bicara pasangan kamu.",
+      "Kasih pasangan kamu satu pelukan dari belakang.",
+      "Bikin panggilan sayang baru buat pasangan, pakai selama sisa hari ini.",
+      "Cium kening pasangan kamu.",
+      "Ajak pasangan slow dance sebentar tanpa musik.",
+      "Kasih compliment tulus ke pasangan, minimal 3 kalimat.",
+      "Foto bareng dengan pose 'couple goals'.",
+      "Coba gambar wajah pasangan dalam 1 menit, boleh jelek.",
+      "Ceritain satu hal yang bikin kamu bangga jadi pasangannya dia.",
+      "Genggam tangan pasangan sambil jalan-jalan kecil di rumah atau sekitar.",
+      "Kirim pesan 'aku kangen' meski lagi di sebelahan.",
+      "Kasih pasangan hadiah kecil dari barang yang ada di sekitar.",
+      "Buat playlist singkat berisi 3 lagu yang ngingetin ke pasangan.",
+      "Tebak makanan favorit pasangan tanpa nanya.",
+      "Coba masak atau bikin minuman simpel buat pasangan.",
+      "Ajak pasangan foto polaroid atau foto bareng buat ditempel di galeri kenangan.",
+      "Kasih pasangan satu pujian tentang penampilannya hari ini.",
+      "Ceritain rencana kencan impian kamu buat pasangan.",
+      "Peluk pasangan sambil bilang satu alasan kenapa kamu bersyukur punya dia.",
+      "Coba tiru ekspresi wajah pasangan waktu lagi seneng.",
+      "Kasih pasangan satu kecupan di pipi.",
+      "Ajak pasangan main tebak-tebakan ringan tentang kenangan kalian.",
+      "Kirim GIF atau emoji yang paling menggambarkan perasaan kamu ke pasangan sekarang.",
+      "Ceritain satu hal receh yang bikin kamu kepikiran soal pasangan hari ini.",
+      "Coba imitasi cara pasangan ketawa.",
+      "Kasih pasangan pelukan erat selama 10 detik sambil merem.",
+      "Tulis 3 kata yang menggambarkan pasangan kamu, tunjukin ke dia.",
+      "Ajak pasangan foto candid tanpa aba-aba.",
+      "Coba nebak lagu favorit pasangan dari judulnya doang.",
+      "Kasih pasangan satu kalimat 'makasih udah...' yang tulus.",
+      "Ajak pasangan main rock-paper-scissors, yang kalah traktir yang menang.",
+      "Coba deskripsiin pasangan kamu ke orang lain dalam satu kalimat lucu.",
+      "Kasih pasangan satu pelukan sambil bilang rencana kalian minggu depan.",
+      "Ceritain hal yang pengen kamu coba bareng pasangan tapi belum sempat.",
+      "Ajak pasangan bikin janji kecil buat hari ini, misalnya nonton bareng.",
+      "Coba tebak warna favorit pasangan tanpa nanya.",
+      "Kasih pasangan satu kalimat semangat buat besok.",
+      "Ajak pasangan foto bareng pakai filter atau edit paling absurd.",
+      "Ceritain satu momen paling proud ke pasangan tentang pencapaiannya.",
+      "Kasih pasangan satu pelukan sambil dengerin lagu favorit kalian.",
+      "Coba tiru pose foto favorit pasangan di sosmed.",
+      "Ajak pasangan mikirin nama panggilan buat 'anak kucing atau anjing masa depan' bareng-bareng.",
+      "Tulis satu hal yang bikin kamu makin cinta sama pasangan, kasih liat ke dia."
     ]
   },
 
@@ -801,177 +1035,234 @@ const CONFIG = {
     }
   }
 
-  /* ---------- Game Puzzle Foto (sliding puzzle 3x3) ---------- */
-  function initPuzzle(){
-    const boardEl = document.getElementById('puzzleBoard');
-    const movesEl = document.getElementById('puzzleMoves');
-    const timeEl = document.getElementById('puzzleTime');
-    const captionEl = document.getElementById('puzzleCaption');
-    const nextPhotoBtn = document.getElementById('puzzleNextPhoto');
-    const revealBtn = document.getElementById('puzzleReveal');
-    const winEl = document.getElementById('puzzleWin');
-    const photoList = (CONFIG.puzzle && CONFIG.puzzle.images) || [];
-    if(!boardEl || photoList.length === 0) return;
+  /* ---------- Memory Match Game ---------- */
+  function initMemoryMatch(){
+    const gridEl = document.getElementById('matchGrid');
+    const movesEl = document.getElementById('matchMoves');
+    const timeEl = document.getElementById('matchTime');
+    const pairsEl = document.getElementById('matchPairs');
+    const restartBtn = document.getElementById('matchRestart');
+    const winEl = document.getElementById('matchWin');
+    const winMsg = document.getElementById('matchWinMsg');
+    const configuredPhotos = (CONFIG.memoryMatch && CONFIG.memoryMatch.images) || [];
+    const photos = configuredPhotos.length
+      ? configuredPhotos
+      : Array.from(new Set((CONFIG.memories || [])
+          .filter(function(mem){ return mem.type === 'image'; })
+          .map(function(mem){ return mem.src; })));
+    if(!gridEl || photos.length < 2) return;
 
-    const SIZE = 3; // grid 3x3
-    const BLANK = SIZE*SIZE - 1; // 8
-    let currentPhotoIndex = -1;
-    let imageSrc = '';
-
-    function pickNextPhoto(random){
-      if(photoList.length === 1){
-        currentPhotoIndex = 0;
-      } else if(random){
-        let next;
-        do{ next = Math.floor(Math.random()*photoList.length); } while(next === currentPhotoIndex);
-        currentPhotoIndex = next;
-      } else {
-        currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
-      }
-      const photo = photoList[currentPhotoIndex];
-      imageSrc = photo.src;
-      captionEl.textContent = photo.caption || '';
-    }
-
-    let board = [];       // array posisi -> id keping (0..7 = gambar, 8 = kosong)
+    const timeLimit = (CONFIG.memoryMatch && CONFIG.memoryMatch.timeLimitSeconds) || 90;
+    let cards = [];
+    let flipped = [];
+    let matchedCount = 0;
     let moves = 0;
-    let seconds = 0;
+    let secondsLeft = timeLimit;
     let timerId = null;
-    let solved = false;
-    let revealing = false;
+    let lockBoard = false;
+    let started = false;
 
-    function solvedBoard(){
-      const arr = [];
-      for(let i=0;i<SIZE*SIZE;i++) arr.push(i);
-      return arr;
-    }
-
-    function isSolved(arr){
-      for(let i=0;i<arr.length;i++){ if(arr[i] !== i) return false; }
-      return true;
-    }
-
-    function shuffleBoard(){
-      board = solvedBoard();
-      let blank = BLANK;
-      let lastBlank = -1;
-      const shuffleSteps = 120;
-      for(let s=0;s<shuffleSteps;s++){
-        const neighbors = getNeighbors(blank).filter(function(n){ return n !== lastBlank; });
-        const next = neighbors[Math.floor(Math.random()*neighbors.length)];
-        board[blank] = board[next];
-        board[next] = BLANK;
-        lastBlank = blank;
-        blank = next;
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
       }
-      if(isSolved(board)){
-        // pastikan tidak langsung solved
-        const n = getNeighbors(BLANK)[0];
-        const b = board.indexOf(BLANK);
-        board[b] = board[n];
-        board[n] = BLANK;
-      }
+      return a;
     }
 
-    function getNeighbors(pos){
-      const row = Math.floor(pos/SIZE), col = pos%SIZE;
-      const result = [];
-      if(row > 0) result.push(pos-SIZE);
-      if(row < SIZE-1) result.push(pos+SIZE);
-      if(col > 0) result.push(pos-1);
-      if(col < SIZE-1) result.push(pos+1);
-      return result;
+    function buildDeck(){
+      let deck = [];
+      photos.forEach(function(src, idx){
+        deck.push({ pairId: idx, src: src });
+        deck.push({ pairId: idx, src: src });
+      });
+      return shuffle(deck);
+    }
+
+    function formatTime(totalSeconds){
+      const m = String(Math.floor(totalSeconds / 60)).padStart(2,'0');
+      const s = String(totalSeconds % 60).padStart(2,'0');
+      return m + ':' + s;
     }
 
     function startTimer(){
-      stopTimer();
-      seconds = 0;
-      timeEl.textContent = '00:00';
+      if(timerId || secondsLeft <= 0) return;
+      timeEl.textContent = formatTime(secondsLeft);
       timerId = setInterval(function(){
-        seconds++;
-        const m = String(Math.floor(seconds/60)).padStart(2,'0');
-        const s = String(seconds%60).padStart(2,'0');
-        timeEl.textContent = m + ':' + s;
+        secondsLeft--;
+        timeEl.textContent = formatTime(secondsLeft);
+        if(secondsLeft <= 0){
+          stopTimer();
+          lockBoard = true;
+          winMsg.textContent = 'Yahhhhhh Waktu habis, coba lagi yuk sayangg semangatttt!';
+          winEl.classList.add('show');
+        }
       }, 1000);
     }
+
     function stopTimer(){
       if(timerId){ clearInterval(timerId); timerId = null; }
     }
 
     function render(){
-      boardEl.innerHTML = '';
-      boardEl.classList.toggle('solved', solved);
-      board.forEach(function(tileId, pos){
-        const tile = document.createElement('div');
-        tile.className = 'puzzle-tile' + (tileId === BLANK ? ' blank' : '');
-        if(tileId !== BLANK){
-          const row = Math.floor(tileId/SIZE), col = tileId%SIZE;
-          const pct = 100/(SIZE-1);
-          tile.style.backgroundImage = "url('"+imageSrc+"')";
-          tile.style.backgroundSize = (SIZE*100)+'% '+(SIZE*100)+'%';
-          tile.style.backgroundPosition = (col*pct)+'% '+(row*pct)+'%';
-        }
-        tile.addEventListener('click', function(){ handleTileClick(pos); });
-        boardEl.appendChild(tile);
+      gridEl.innerHTML = '';
+      cards.forEach(function(cardData, pos){
+        const cardEl = document.createElement('div');
+        cardEl.className = 'match-card';
+        cardEl.dataset.pos = pos;
+        cardEl.innerHTML =
+          '<div class="match-card-inner">' +
+            '<div class="match-face match-face-back">&#10084;</div>' +
+            '<div class="match-face match-face-front"><img src="'+cardData.src+'" alt="kenangan"></div>' +
+          '</div>';
+        cardEl.addEventListener('click', function(){ handleCardClick(pos, cardEl); });
+        gridEl.appendChild(cardEl);
       });
     }
 
-    function handleTileClick(pos){
-      if(solved || revealing) return;
-      const blankPos = board.indexOf(BLANK);
-      const neighbors = getNeighbors(blankPos);
-      if(neighbors.indexOf(pos) === -1) return;
-      board[blankPos] = board[pos];
-      board[pos] = BLANK;
-      moves++;
-      movesEl.textContent = moves;
-      render();
-      if(isSolved(board)){
-        solved = true;
-        stopTimer();
-        winEl.classList.add('show');
+    function handleCardClick(pos, cardEl){
+      if(lockBoard) return;
+      if(cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+      if(!started){
+        started = true;
+        winEl.classList.remove('show');
+        winMsg.textContent = 'Semua kartu berhasil dicocokkan!';
+        startTimer();
+      }
+      cardEl.classList.add('flipped');
+      flipped.push({ pos: pos, el: cardEl });
+
+      if(flipped.length === 2){
+        moves++;
+        movesEl.textContent = moves;
+        lockBoard = true;
+        const first = flipped[0];
+        const second = flipped[1];
+        const isMatch = cards[first.pos].pairId === cards[second.pos].pairId;
+        if(isMatch){
+          setTimeout(function(){
+            first.el.classList.add('matched');
+            second.el.classList.add('matched');
+            matchedCount++;
+            pairsEl.textContent = matchedCount + '/' + photos.length;
+            flipped = [];
+            lockBoard = false;
+            if(matchedCount === photos.length){
+              stopTimer();
+              winEl.classList.add('show');
+            }
+          }, 400);
+        } else {
+          setTimeout(function(){
+            first.el.classList.remove('flipped');
+            second.el.classList.remove('flipped');
+            flipped = [];
+            lockBoard = false;
+          }, 800);
+        }
       }
     }
 
-    function newGame(chooseRandomPhoto){
+    function newGame(){
+      stopTimer();
       winEl.classList.remove('show');
-      solved = false;
-      revealing = false;
+      winMsg.textContent = 'Semua kartu berhasil dicocokkan!';
+      cards = buildDeck();
+      flipped = [];
+      matchedCount = 0;
       moves = 0;
+      secondsLeft = timeLimit;
+      timerId = null;
+      lockBoard = false;
+      started = false;
       movesEl.textContent = '0';
-      revealBtn.textContent = 'Lihat Gambar Asli';
-      if(chooseRandomPhoto || currentPhotoIndex === -1){
-        pickNextPhoto(true);
-      }
-      shuffleBoard();
+      pairsEl.textContent = '0/' + photos.length;
+      timeEl.textContent = formatTime(secondsLeft);
       render();
-      startTimer();
     }
 
-    nextPhotoBtn.addEventListener('click', function(){
-      pickNextPhoto(false);
-      newGame(false);
-    });
-    revealBtn.addEventListener('click', function(){
-      revealing = !revealing;
-      if(revealing){
-        boardEl.innerHTML = '';
-        const full = document.createElement('div');
-        full.style.gridColumn = '1 / -1';
-        full.style.gridRow = '1 / -1';
-        full.style.backgroundImage = "url('"+imageSrc+"')";
-        full.style.backgroundSize = 'cover';
-        full.style.backgroundPosition = 'center';
-        full.style.borderRadius = '8px';
-        boardEl.appendChild(full);
-        revealBtn.textContent = 'Kembali ke Puzzle';
+    restartBtn.addEventListener('click', newGame);
+    newGame();
+  }
+
+  /* ---------- Truth or Dare ---------- */
+  function initTruthOrDare(){
+    const truthBtn = document.getElementById('todTruthBtn');
+    const dareBtn = document.getElementById('todDareBtn');
+    const cardEl = document.getElementById('todCard');
+    const badgeEl = document.getElementById('todBadge');
+    const textEl = document.getElementById('todText');
+    const controlsEl = document.getElementById('todControls');
+    const againBtn = document.getElementById('todAgain');
+    const resetBtn = document.getElementById('todReset');
+    const emptyEl = document.getElementById('todEmpty');
+    const truthCountEl = document.getElementById('todTruthCount');
+    const dareCountEl = document.getElementById('todDareCount');
+    const truths = (CONFIG.truthOrDare && CONFIG.truthOrDare.truths) || [];
+    const dares = (CONFIG.truthOrDare && CONFIG.truthOrDare.dares) || [];
+    if(!truthBtn || !dareBtn) return;
+
+    let usedTruthIdx = [];
+    let usedDareIdx = [];
+    let lastType = null;
+
+    function updateStats(){
+      truthCountEl.textContent = usedTruthIdx.length + '/' + truths.length;
+      dareCountEl.textContent = usedDareIdx.length + '/' + dares.length;
+    }
+
+    function pickRandom(list, usedList){
+      const remainingIdx = list.map(function(_, i){ return i; }).filter(function(i){ return usedList.indexOf(i) === -1; });
+      if(remainingIdx.length === 0) return null;
+      const choice = remainingIdx[Math.floor(Math.random() * remainingIdx.length)];
+      usedList.push(choice);
+      return list[choice];
+    }
+
+    function showCard(type){
+      let text;
+      if(type === 'truth'){
+        text = pickRandom(truths, usedTruthIdx);
       } else {
-        render();
-        revealBtn.textContent = 'Lihat Gambar Asli';
+        text = pickRandom(dares, usedDareIdx);
       }
+      if(text === null){
+        emptyEl.hidden = false;
+        emptyEl.textContent = type === 'truth'
+          ? 'Semua pertanyaan jujur sudah habis diambil. Tekan Reset Semua untuk main lagi dari awal.'
+          : 'Semua tantangan sudah habis diambil. Tekan Reset Semua untuk main lagi dari awal.';
+        cardEl.hidden = true;
+        controlsEl.hidden = true;
+        updateStats();
+        return;
+      }
+      lastType = type;
+      emptyEl.hidden = true;
+      badgeEl.textContent = type === 'truth' ? 'Jujur' : 'Tantangan';
+      badgeEl.className = 'tod-badge ' + type;
+      textEl.textContent = text;
+      cardEl.hidden = false;
+      controlsEl.hidden = false;
+      updateStats();
+    }
+
+    truthBtn.addEventListener('click', function(){ showCard('truth'); });
+    dareBtn.addEventListener('click', function(){ showCard('dare'); });
+    againBtn.addEventListener('click', function(){
+      if(lastType) showCard(lastType);
+    });
+    resetBtn.addEventListener('click', function(){
+      usedTruthIdx = [];
+      usedDareIdx = [];
+      lastType = null;
+      cardEl.hidden = true;
+      controlsEl.hidden = true;
+      emptyEl.hidden = true;
+      updateStats();
     });
 
-    newGame(true);
+    updateStats();
   }
 
   const bgMusic = document.getElementById('bgMusic');
@@ -1062,7 +1353,8 @@ const CONFIG = {
 
   initHero();
   renderGallery();
-  initPuzzle();
+  initMemoryMatch();
+  initTruthOrDare();
   initLetter();
 })();
 </script>
