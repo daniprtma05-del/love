@@ -515,11 +515,273 @@
     .letter-caret{ animation:none !important; }
     .match-card-inner{ transition:none !important; }
   }
+  /* ---------- BIRTHDAY COUNTDOWN & LOCKED LETTER ---------- */
+  .birthday-section{
+    position:relative; z-index:1;
+    max-width:900px; margin:60px auto 0; padding:20px 24px 80px;
+  }
+  .birthday-section .gallery-head{ text-align:center; margin-bottom:48px; }
+  .birthday-countdown-wrap{
+    background:linear-gradient(135deg, rgba(232, 175, 193, 0.1), rgba(197, 116, 142, 0.08));
+    border:2px solid var(--pink);
+    border-radius:24px;
+    padding:40px 30px;
+    box-shadow:0 16px 40px -12px rgba(197, 116, 142, 0.2);
+    text-align:center;
+  }
+  .birthday-countdown-title{
+    font-family:'Fraunces',serif;
+    font-size:clamp(24px,4vw,32px);
+    color:var(--pink-deep);
+    margin:0 0 12px;
+    font-weight:600;
+  }
+  .birthday-countdown-sub{
+    color:var(--ink-soft);
+    font-size:15px;
+    margin:0 0 32px;
+  }
+  .birthday-counter{
+    display:flex; gap:20px; flex-wrap:wrap; justify-content:center;
+    margin-bottom:32px;
+  }
+  .birthday-counter .unit{
+    display:flex; flex-direction:column; align-items:center;
+    background:#fff;
+    padding:20px 24px;
+    border-radius:16px;
+    border:1px solid var(--pink-line);
+    min-width:100px;
+    box-shadow:0 4px 12px rgba(197, 116, 142, 0.1);
+  }
+  .birthday-counter .num{
+    font-family:'Fraunces',serif;
+    font-size:32px;
+    font-weight:700;
+    color:var(--pink-deep);
+    line-height:1;
+  }
+  .birthday-counter .lbl{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.15em;
+    color:var(--ink-soft);
+    margin-top:8px;
+    font-weight:600;
+  }
+  .birthday-calendar{
+    background:#fff;
+    border-radius:20px;
+    padding:28px;
+    border:1px solid var(--pink-line);
+    margin-bottom:28px;
+    box-shadow:0 8px 24px rgba(197, 116, 142, 0.08);
+  }
+  .cal-header{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;
+  }
+  .cal-nav{
+    display:flex; gap:12px;
+  }
+  .cal-nav button{
+    border:none;
+    background:var(--pink);
+    color:#fff;
+    border-radius:8px;
+    padding:6px 12px;
+    font-size:13px;
+    cursor:pointer;
+    transition:background .2s;
+  }
+  .cal-nav button:hover{
+    background:var(--pink-deep);
+  }
+  .cal-month-year{
+    font-family:'Fraunces',serif;
+    font-size:20px;
+    font-weight:600;
+    color:var(--pink-deep);
+  }
+  .cal-weekdays{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .cal-weekday{
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+    padding:8px 0;
+  }
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+  }
+  .cal-day{
+    aspect-ratio:1/1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    font-size:14px;
+    cursor:default;
+    border:1px solid transparent;
+    transition:all .2s;
+  }
+  .cal-day.empty{
+    color:transparent;
+  }
+  .cal-day.other{
+    color:var(--ink-soft);
+    opacity:0.4;
+  }
+  .cal-day.today{
+    background:var(--bg-soft);
+    border-color:var(--pink);
+  }
+  .cal-day.birthday{
+    background:linear-gradient(135deg, var(--pink), var(--pink-deep));
+    color:#fff;
+    font-weight:700;
+    border:none;
+    box-shadow:0 4px 12px rgba(197, 116, 142, 0.35);
+  }
+
+  .birthday-locked-letter{
+    background:#fff;
+    border:2px solid var(--pink);
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 12px 32px rgba(197, 116, 142, 0.15);
+  }
+  .birthday-locked-icon{
+    font-size:48px;
+    margin-bottom:16px;
+  }
+  .birthday-locked-title{
+    font-family:'Fraunces',serif;
+    font-size:clamp(20px,3vw,26px);
+    color:var(--pink-deep);
+    margin:0 0 12px;
+    font-weight:600;
+  }
+  .birthday-locked-text{
+    color:var(--ink-soft);
+    font-size:15px;
+    margin:0 0 20px;
+    line-height:1.6;
+  }
+  .birthday-open-btn{
+    border:none;
+    background:linear-gradient(135deg, var(--pink), var(--pink-deep));
+    color:#fff;
+    border-radius:12px;
+    padding:14px 32px;
+    font-size:15px;
+    font-weight:600;
+    cursor:not-allowed;
+    opacity:0.6;
+    transition:all .3s;
+  }
+  .birthday-open-btn:not(:disabled){
+    cursor:pointer;
+    opacity:1;
+  }
+  .birthday-open-btn:not(:disabled):hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(197, 116, 142, 0.3);
+  }
+  .birthday-surprise-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(61,44,51,0.92);
+    z-index:300;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .birthday-surprise-modal.show{
+    display:flex;
+  }
+  .birthday-surprise-content{
+    background:#fff;
+    border-radius:24px;
+    padding:40px;
+    max-width:600px;
+    width:100%;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 30px 60px rgba(0,0,0,0.5);
+    animation:slideIn .4s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes slideIn{
+    from{
+      opacity:0;
+      transform:translateY(20px) scale(0.95);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0) scale(1);
+    }
+  }
+  .birthday-surprise-close{
+    position:absolute;
+    top:20px;
+    right:24px;
+    background:none;
+    border:none;
+    font-size:32px;
+    color:var(--ink);
+    cursor:pointer;
+    opacity:0.6;
+    transition:opacity .2s;
+  }
+  .birthday-surprise-close:hover{
+    opacity:1;
+  }
+  .birthday-surprise-icon{
+    font-size:56px;
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .birthday-surprise-title{
+    font-family:'Fraunces',serif;
+    font-size:28px;
+    color:var(--pink-deep);
+    text-align:center;
+    margin:0 0 24px;
+    font-weight:600;
+  }
+  .birthday-surprise-body{
+    font-size:16px;
+    line-height:1.8;
+    color:var(--ink);
+    white-space:pre-wrap;
+    text-align:center;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .petal, .scrolldown svg{ animation:none !important; }
+    .card{ transition:none !important; }
+    .letter-caret{ animation:none !important; }
+    .match-card-inner{ transition:none !important; }
+    .birthday-surprise-content{ animation:none !important; }
+  }
   @media (max-width:520px){
     .counter{ gap:16px; padding:18px 20px; }
     .grid{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:26px 16px; }
     .letter-paper{ padding:48px 24px 40px 42px; }
     .letter-paper::before{ left:26px; }
+    .birthday-counter{ gap:12px; }
+    .birthday-counter .unit{ padding:16px 18px; min-width:80px; }
+    .birthday-counter .num{ font-size:24px; }
   }
 </style>
 </head>
@@ -549,6 +811,86 @@
       <button id="nextTrack" type="button">Berikutnya</button>
     </div>
     <div class="playlist" id="playlist"></div>
+  </div>
+</div>
+
+<!-- Birthday Countdown & Locked Letter -->
+<div class="birthday-section" id="birthdaySection">
+  <div class="gallery-head">
+    <div class="eyebrow">Spesial Moment</div>
+  </div>
+  
+  <div class="birthday-countdown-wrap">
+    <h3 class="birthday-countdown-title">&#128157;</h3>
+    <p class="birthday-countdown-sub">Hitung mundur nihhh ke hari spesialmu</p>
+    
+    <div class="birthday-counter">
+      <div class="unit">
+        <div class="num" id="bdDay">0</div>
+        <div class="lbl">Hari</div>
+      </div>
+      <div class="unit">
+        <div class="num" id="bdHour">0</div>
+        <div class="lbl">Jam</div>
+      </div>
+      <div class="unit">
+        <div class="num" id="bdMinute">0</div>
+        <div class="lbl">Menit</div>
+      </div>
+      <div class="unit">
+        <div class="num" id="bdSecond">0</div>
+        <div class="lbl">Detik</div>
+      </div>
+    </div>
+
+    <div class="birthday-calendar">
+      <div class="cal-header">
+        <div class="cal-nav">
+          <button id="calPrev" type="button">←</button>
+        </div>
+        <div class="cal-month-year" id="calMonthYear">Desember 2026</div>
+        <div class="cal-nav">
+          <button id="calNext" type="button">→</button>
+        </div>
+      </div>
+      <div class="cal-weekdays">
+        <div class="cal-weekday">Sen</div>
+        <div class="cal-weekday">Sel</div>
+        <div class="cal-weekday">Rab</div>
+        <div class="cal-weekday">Kam</div>
+        <div class="cal-weekday">Jum</div>
+        <div class="cal-weekday">Sab</div>
+        <div class="cal-weekday">Min</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+  </div>
+
+  <div class="birthday-locked-letter">
+    <div class="birthday-locked-icon">🔐</div>
+    <h3 class="birthday-locked-title" id="lockedTitle">Surat Ulang Tahun</h3>
+    <p class="birthday-locked-text" id="lockedText">Surat ini hanya bisa dibuka pada tanggal 5 Desember yaa sayangggg, sabarrrrr itunya masih banyak yg harus di updatee. Tunggu sampai harinya tiba ya sayang! &#128149;</p>
+    <button class="birthday-open-btn" id="openBirthdayBtn" type="button" disabled>Surat Terkunci</button>
+  </div>
+</div>
+
+<!-- Birthday Surprise Modal -->
+<div class="birthday-surprise-modal" id="birthdaySurpriseModal">
+  <button class="birthday-surprise-close" id="closeSurpriseModal">&times;</button>
+  <div class="birthday-surprise-content">
+    <div class="birthday-surprise-icon" id="surpriseIcon">🎉</div>
+    <h2 class="birthday-surprise-title" id="surpriseTitle">Selamat Ulang Tahun!</h2>
+    <div class="birthday-surprise-body" id="surpriseBody">Selamat ulang tahun sayangkuuuu!
+
+Hari ini adalah harimu sayangggggg :3. bahkan web ini juga nunggu hari iniii tauuuuuuuuu hehehe. Aku pengen kamu tahu betapa berharganya kamu bagiku.
+
+Terima kasih udahh hadir dan mewarnai hidupku sayanggggg. Semoga di usia yang baru ini, kamu semakin bahagia, semakin sukses, dan semakin cantiiiii (jujur cantinya udah kebagetan siiii).
+
+Semoga semua impianmu tercapai, dan setiap hari di tahun ini adalah momen yang indah untukmu.
+
+Happy Birthday Sayangg! 🎂💕
+
+— Danuyyy</div>
   </div>
 </div>
 
@@ -1035,6 +1377,150 @@ const CONFIG = {
     }
   }
 
+  /* ---------- Birthday Countdown & Calendar ---------- */
+  function initBirthdayCountdown(){
+    const bdDayEl = document.getElementById('bdDay');
+    const bdHourEl = document.getElementById('bdHour');
+    const bdMinuteEl = document.getElementById('bdMinute');
+    const bdSecondEl = document.getElementById('bdSecond');
+    const openBtn = document.getElementById('openBirthdayBtn');
+    const modal = document.getElementById('birthdaySurpriseModal');
+    const closeModal = document.getElementById('closeSurpriseModal');
+    const lockedTitle = document.getElementById('lockedTitle');
+    const lockedText = document.getElementById('lockedText');
+
+    // Target date: December 5, 2026
+    const targetYear = new Date().getFullYear();
+    const targetDate = new Date(targetYear, 11, 5, 0, 0, 0, 0);
+    
+    // If Dec 5 already passed this year, target next year
+    if(new Date() > targetDate){
+      targetDate.setFullYear(targetYear + 1);
+    }
+
+    function updateCountdown(){
+      const now = new Date();
+      const diff = targetDate - now;
+      
+      if(diff <= 0){
+        // Birthday reached!
+        bdDayEl.textContent = '0';
+        bdHourEl.textContent = '0';
+        bdMinuteEl.textContent = '0';
+        bdSecondEl.textContent = '0';
+        lockedTitle.textContent = '🎉 Selamat Ulang Tahun! 🎉';
+        lockedText.textContent = 'Hari spesialmu tiba! Buka surat istimewamu di bawah ini.';
+        openBtn.disabled = false;
+        openBtn.textContent = 'Buka Surat';
+        openBtn.style.opacity = '1';
+        openBtn.style.cursor = 'pointer';
+      } else {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / 1000 / 60) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        
+        bdDayEl.textContent = days;
+        bdHourEl.textContent = String(hours).padStart(2, '0');
+        bdMinuteEl.textContent = String(minutes).padStart(2, '0');
+        bdSecondEl.textContent = String(seconds).padStart(2, '0');
+        
+        openBtn.disabled = true;
+        openBtn.textContent = 'Surat Terkunci';
+        openBtn.style.opacity = '0.6';
+        openBtn.style.cursor = 'not-allowed';
+      }
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    openBtn.addEventListener('click', function(){
+      if(!openBtn.disabled){
+        modal.classList.add('show');
+      }
+    });
+
+    closeModal.addEventListener('click', function(){
+      modal.classList.remove('show');
+    });
+
+    modal.addEventListener('click', function(e){
+      if(e.target === modal){
+        modal.classList.remove('show');
+      }
+    });
+  }
+
+  function initCalendar(){
+    const calGrid = document.getElementById('calGrid');
+    const calMonthYear = document.getElementById('calMonthYear');
+    const calPrev = document.getElementById('calPrev');
+    const calNext = document.getElementById('calNext');
+    
+    let displayMonth = 11; // December (0-indexed)
+    let displayYear = 2026;
+    
+    const monthNames = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+
+    function renderCalendar(){
+      calGrid.innerHTML = '';
+      calMonthYear.textContent = monthNames[displayMonth] + ' ' + displayYear;
+      
+      const firstDay = new Date(displayYear, displayMonth, 1);
+      const lastDay = new Date(displayYear, displayMonth + 1, 0);
+      const startDate = new Date(firstDay);
+      startDate.setDate(startDate.getDate() - firstDay.getDay() + 1);
+      
+      const today = new Date();
+      const birthdayDate = new Date(displayYear, 11, 5); // Dec 5
+      
+      let currentDate = new Date(startDate);
+      for(let i = 0; i < 42; i++){
+        const dayEl = document.createElement('div');
+        dayEl.className = 'cal-day';
+        
+        if(currentDate.getMonth() !== displayMonth){
+          dayEl.classList.add('other');
+        } else {
+          if(currentDate.toDateString() === today.toDateString()){
+            dayEl.classList.add('today');
+          }
+          if(currentDate.toDateString() === birthdayDate.toDateString()){
+            dayEl.classList.add('birthday');
+          }
+        }
+        
+        dayEl.textContent = currentDate.getDate();
+        calGrid.appendChild(dayEl);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    }
+
+    calPrev.addEventListener('click', function(){
+      displayMonth--;
+      if(displayMonth < 0){
+        displayMonth = 11;
+        displayYear--;
+      }
+      renderCalendar();
+    });
+
+    calNext.addEventListener('click', function(){
+      displayMonth++;
+      if(displayMonth > 11){
+        displayMonth = 0;
+        displayYear++;
+      }
+      renderCalendar();
+    });
+
+    renderCalendar();
+  }
+
   /* ---------- Memory Match Game ---------- */
   function initMemoryMatch(){
     const gridEl = document.getElementById('matchGrid');
@@ -1353,6 +1839,8 @@ const CONFIG = {
 
   initHero();
   renderGallery();
+  initBirthdayCountdown();
+  initCalendar();
   initMemoryMatch();
   initTruthOrDare();
   initLetter();
